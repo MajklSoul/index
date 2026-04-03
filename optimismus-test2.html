@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Optimismus vs Pesimismus – Test vysvětlovacího stylu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --yellow: #FFE135;
+      --yellow-dark: #F5C800;
+      --yellow-light: #FFF8C2;
+      --yellow-muted: rgba(255,225,53,0.1);
+      --yellow-border: rgba(255,225,53,0.25);
+      --bg: #111111;
+      --bg-card: #1C1C1C;
+      --bg-card2: #242424;
+      --text: #FFFFFF;
+      --text-secondary: rgba(255,255,255,0.65);
+      --text-tertiary: rgba(255,255,255,0.35);
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.14);
+      --green: #4ADE80;
+      --orange: #FB923C;
+      --red: #F87171;
+      --font-display: 'Montserrat', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+      --radius: 20px;
+      --radius-lg: 28px;
+      --radius-xl: 36px;
+    }
+
+    body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; }
+    #app { max-width: 660px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── INTRO ── */
+    .intro-eyebrow { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--yellow); margin-bottom: 1rem; font-weight: 600; }
+    .intro-title { font-family: var(--font-display); font-size: clamp(2rem, 6vw, 3rem); line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1.25rem; color: var(--text); }
+    .intro-title span { color: var(--yellow); }
+    .intro-desc { font-size: 16px; line-height: 1.75; color: var(--text-secondary); margin-bottom: 2.5rem; max-width: 500px; }
+    .intro-pills { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 2.5rem; }
+    .intro-pill { font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 999px; background: var(--yellow-muted); color: var(--yellow); border: 1px solid var(--yellow-border); }
+    .intro-form { display: flex; flex-direction: column; gap: 1.25rem; max-width: 380px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-label { font-size: 13px; color: var(--text-secondary); font-weight: 600; }
+    .form-input { padding: 13px 18px; border: 1.5px solid var(--border-strong); border-radius: var(--radius); font-family: var(--font-body); font-size: 15px; background: var(--bg-card); color: var(--text); outline: none; transition: border-color 0.2s; }
+    .form-input::placeholder { color: var(--text-tertiary); }
+    .form-input:focus { border-color: var(--yellow); }
+    .gender-row { display: flex; gap: 10px; }
+    .gender-btn { flex: 1; padding: 13px; border: 1.5px solid var(--border-strong); border-radius: var(--radius); background: var(--bg-card); cursor: pointer; font-family: var(--font-body); font-size: 14px; font-weight: 600; color: var(--text-secondary); transition: all 0.2s; }
+    .gender-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+    .gender-btn.selected { border-color: var(--yellow); background: var(--yellow); color: #111; }
+
+    /* ── BUTTONS ── */
+    .btn-primary { padding: 14px 32px; background: var(--yellow); color: #111; border: none; border-radius: var(--radius); font-family: var(--font-body); font-size: 15px; font-weight: 700; cursor: pointer; transition: transform 0.1s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(255,225,53,0.3); }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(255,225,53,0.45); }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-primary:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; transform: none; }
+    .btn-secondary { padding: 13px 26px; border: 1.5px solid var(--border-strong); border-radius: var(--radius); background: var(--bg-card); font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer; color: var(--text-secondary); transition: border-color 0.2s, color 0.2s; }
+    .btn-secondary:hover { border-color: var(--yellow); color: var(--yellow); }
+
+    /* ── PROGRESS ── */
+    .progress-section { margin-bottom: 2.25rem; }
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .progress-counter { font-size: 12px; color: var(--text-tertiary); }
+    .progress-dim-info { font-size: 12px; color: var(--text-secondary); }
+    .progress-road-wrap { position: relative; height: 60px; }
+    .cp-labels { position: absolute; top: 0; left: 0; right: 0; height: 16px; }
+    .cp-label {
+      position: absolute;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      top: 0;
+    }
+    .cp-label.stalost { color: #0F6E56; left: 0%; transform: translateX(0); }
+    .cp-label.rozsah  { color: #3C3489; left: 33.3%; transform: translateX(-50%); }
+    .cp-label.person  { color: #854F0B; left: 66.6%; transform: translateX(-50%); }
+    .cp-label.finish  { color: var(--text-tertiary); right: 0; }
+    .progress-road {
+      position: absolute;
+      bottom: 18px;
+      left: 0; right: 0;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+    }
+    .progress-road-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--yellow);
+      transition: width 0.4s ease;
+      box-shadow: 0 0 10px rgba(255,225,53,0.5);
+    }
+    .cp-dots { position: absolute; bottom: 18px; left: 0; right: 0; height: 4px; pointer-events: none; }
+    .cp-dot {
+      position: absolute;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      top: 50%; transform: translate(-50%, -50%);
+      background: #2a2a2a;
+      border-color: var(--border-strong);
+      transition: background 0.4s, border-color 0.4s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cp-dot.stalost { left: 0%; }
+    .cp-dot.rozsah  { left: 33.3%; }
+    .cp-dot.person  { left: 66.6%; }
+    .cp-dot.done    { background: var(--yellow); border-color: var(--yellow); }
+    .cp-dot.done::after {
+      content: '';
+      display: block;
+      width: 5px; height: 9px;
+      border: 2.5px solid #111;
+      border-top: none; border-left: none;
+      transform: rotate(45deg) translateY(-1px);
+    }
+    .progress-cat {
+      position: absolute;
+      bottom: 24px;
+      transition: left 0.4s ease;
+      transform: translateX(-50%);
+      font-size: 22px;
+      line-height: 1;
+      filter: drop-shadow(0 0 6px rgba(255,225,53,0.6));
+    }
+    .progress-flag { position: absolute; right: -2px; bottom: 14px; font-size: 18px; }
+
+    /* ── DIM TAG ── */
+    .dim-tag { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; font-weight: 700; display: inline-block; margin-bottom: 0.75rem; }
+    .dim-stalost { background: rgba(74,222,128,0.15); color: #4ADE80; border: 1px solid rgba(74,222,128,0.25); }
+    .dim-rozsah { background: rgba(255,225,53,0.12); color: var(--yellow); border: 1px solid var(--yellow-border); }
+    .dim-personalizace { background: rgba(251,146,60,0.12); color: #FB923C; border: 1px solid rgba(251,146,60,0.25); }
+
+    /* ── QUESTION ── */
+    .q-number { font-size: 12px; color: var(--text-tertiary); margin-bottom: 0.5rem; font-weight: 600; }
+    .q-text {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 3vw, 1.6rem);
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 1.75rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .q-options { display: flex; flex-direction: column; gap: 12px; }
+    .q-option {
+      padding: 18px 22px;
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      background: var(--bg-card);
+      cursor: pointer;
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      text-align: left;
+      font-family: var(--font-body);
+      font-weight: 500;
+      width: 100%;
+      transition: border-color 0.2s, color 0.2s, transform 0.1s;
+    }
+    .q-option:hover { border-color: var(--yellow); color: var(--text); transform: translateX(4px); }
+    .q-option.picked { border-color: var(--yellow); background: var(--yellow-muted); color: var(--text); }
+    .q-back { background: none; border: none; font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--text-tertiary); cursor: pointer; padding: 0; margin-top: 1.25rem; display: inline-flex; align-items: center; gap: 4px; }
+    .q-back:hover { color: var(--yellow); }
+
+    /* ── RESULTS ── */
+    .result-hero { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+    .result-name { font-size: 14px; color: var(--text-tertiary); margin-bottom: 0.5rem; font-weight: 600; }
+    .result-headline {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 4vw, 1.9rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: 1.75rem;
+      color: var(--text);
+    }
+    .result-headline span { color: var(--yellow); }
+    .big-score-wrap { position: relative; width: 170px; height: 170px; margin: 0 auto 1rem; }
+    .big-score-svg { width: 170px; height: 170px; }
+    .big-score-text {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      text-align: center;
+    }
+    .big-score-pct {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+    .big-score-type {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+    }
+
+    .dominant-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 999px; font-size: 13px; font-weight: 700; margin-bottom: 2rem; background: var(--yellow-muted); color: var(--yellow); border: 1px solid var(--yellow-border); }
+
+    .dims-grid { display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.75rem; }
+    .dim-card { padding: 1.35rem; border: 1.5px solid var(--border); border-radius: var(--radius-lg); background: var(--bg-card); }
+    .dim-card.dominant { border-color: var(--yellow); }
+    .dim-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .dim-card-title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--text); }
+    .dim-dominant-label { font-size: 10px; padding: 3px 10px; border-radius: 999px; background: var(--yellow); color: #111; font-weight: 700; }
+    .dim-card-pct { font-size: 14px; font-weight: 700; color: var(--text-tertiary); }
+    .dim-bar-bg { height: 7px; background: var(--border-strong); border-radius: 999px; overflow: hidden; margin-bottom: 0.85rem; }
+    .dim-bar-fill { height: 100%; border-radius: 999px; transition: width 0.9s cubic-bezier(.4,0,.2,1); }
+    .fill-teal { background: var(--green); }
+    .fill-purple { background: var(--yellow); }
+    .fill-amber { background: var(--orange); }
+    .dim-desc { font-size: 13px; line-height: 1.65; color: var(--text-secondary); }
+
+    /* ── BENEFITS ── */
+    .benefits-section { margin-bottom: 1.75rem; }
+    .benefits-title { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 1rem; }
+    .benefits-grid { display: flex; flex-direction: column; gap: 10px; }
+    .benefit-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--bg-card); }
+    .benefit-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .benefit-text { font-size: 13px; line-height: 1.6; color: var(--text-secondary); }
+    .benefit-text strong { color: var(--text); font-weight: 700; }
+
+    /* ── PERSONAL CLOSING ── */
+    .closing-card { padding: 1.75rem; border-radius: var(--radius-xl); border: 2px solid var(--yellow); background: var(--yellow-muted); margin-bottom: 1.75rem; text-align: center; box-shadow: 0 0 40px rgba(255,225,53,0.08); }
+    .closing-text { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.4; color: var(--text); }
+    .closing-text .closing-name { color: var(--yellow); }
+    .closing-sub { font-size: 14px; color: var(--text-secondary); margin-top: 0.75rem; line-height: 1.6; }
+
+    .tip-card { padding: 1.35rem; border-radius: var(--radius-lg); background: var(--bg-card); border: 1.5px solid var(--border-strong); margin-bottom: 1.75rem; }
+    .tip-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--yellow); font-weight: 700; margin-bottom: 0.5rem; }
+    .tip-text { font-size: 13px; line-height: 1.65; color: var(--text-secondary); }
+
+    .result-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    /* ── FOOTER ── */
+    .footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-tertiary); line-height: 1.6; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- INTRO -->
+  <div id="screen-intro" class="screen active">
+    <p class="intro-eyebrow">Test vysvětlovacího stylu</p>
+    <h1 class="intro-title">Optimismus<br>vs <span>pesimismus</span></h1>
+    <p class="intro-desc">Zjisti, jak tvůj mozek vidí svět. 24 krátkých situací, žádná odpověď není špatná – jde o to pochopit přirozený pohled na věc.</p>
+    <div class="intro-pills">
+      <span class="intro-pill">24 otázek</span>
+      <span class="intro-pill">cca 5 minut</span>
+      <span class="intro-pill">3 dimenze</span>
+      <span class="intro-pill">inspirováno M. E. P. Seligmanem</span>
+    </div>
+    <div class="intro-form">
+      <div class="form-group">
+        <label class="form-label">Jak ti říkají?</label>
+        <input class="form-input" id="input-name" type="text" placeholder="Tvoje jméno nebo přezdívka" maxlength="30"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Jsi</label>
+        <div class="gender-row">
+          <button class="gender-btn" id="btn-m" onclick="selectGender('m')">Muž</button>
+          <button class="gender-btn" id="btn-f" onclick="selectGender('f')">Žena</button>
+        </div>
+      </div>
+      <button class="btn-primary" id="btn-start" onclick="startTest()" disabled>Spustit test</button>
+    </div>
+  </div>
+
+  <!-- QUESTION -->
+  <div id="screen-question" class="screen">
+    <div class="progress-section">
+      <div class="progress-top">
+        <span class="progress-counter" id="progress-counter"></span>
+        <span class="progress-dim-info" id="progress-dim-info"></span>
+      </div>
+      <div class="progress-road-wrap">
+        <div class="cp-labels">
+          <span class="cp-label stalost">Stálost</span>
+          <span class="cp-label rozsah">Rozsah</span>
+          <span class="cp-label person">Personalizace</span>
+          <span class="cp-label finish">Cíl</span>
+        </div>
+        <div class="progress-road">
+          <div class="progress-road-fill" id="progress-fill"></div>
+        </div>
+        <div class="cp-dots">
+          <div class="cp-dot stalost" id="dot-stalost"></div>
+          <div class="cp-dot rozsah"  id="dot-rozsah"></div>
+          <div class="cp-dot person"  id="dot-person"></div>
+        </div>
+        <div class="progress-cat" id="progress-cat">🐱</div>
+        <span class="progress-flag">🏁</span>
+      </div>
+    </div>
+    <span class="dim-tag" id="dim-tag"></span>
+    <p class="q-number" id="q-number"></p>
+    <p class="q-text" id="q-text"></p>
+    <div class="q-options" id="q-options"></div>
+    <button class="q-back" id="btn-back" onclick="goBack()" style="display:none">← Předchozí otázka</button>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="screen-results" class="screen">
+    <div class="result-hero">
+      <p class="result-name" id="result-name"></p>
+      <h2 class="result-headline" id="result-headline"></h2>
+      <div class="big-score-wrap">
+        <svg class="big-score-svg" viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r="68" fill="none" stroke-width="8" stroke="#2a2a2a"/>
+          <circle cx="80" cy="80" r="68" fill="none" stroke-width="8" stroke-linecap="round"
+            stroke="#D85A30" stroke-dasharray="427" stroke-dashoffset="427"
+            transform="rotate(-90 80 80)" id="score-ring"
+            style="transition: stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)"/>
+        </svg>
+        <div class="big-score-text">
+          <div class="big-score-pct" id="score-pct"></div>
+          <div class="big-score-type" id="score-type-label"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-bottom:1.75rem;">
+      <span class="dominant-badge" id="dominant-badge"></span>
+    </div>
+
+    <div class="dims-grid">
+      <div class="dim-card" id="card-stalost">
+        <div class="dim-card-header">
+          <span class="dim-card-title" id="title-stalost">Stálost</span>
+          <span class="dim-card-pct" id="pct-stalost"></span>
+        </div>
+        <div class="dim-bar-bg"><div class="dim-bar-fill fill-teal" id="bar-stalost" style="width:0%"></div></div>
+        <p class="dim-desc" id="desc-stalost"></p>
+      </div>
+      <div class="dim-card" id="card-rozsah">
+        <div class="dim-card-header">
+          <span class="dim-card-title" id="title-rozsah">Rozsah</span>
+          <span class="dim-card-pct" id="pct-rozsah"></span>
+        </div>
+        <div class="dim-bar-bg"><div class="dim-bar-fill fill-purple" id="bar-rozsah" style="width:0%"></div></div>
+        <p class="dim-desc" id="desc-rozsah"></p>
+      </div>
+      <div class="dim-card" id="card-person">
+        <div class="dim-card-header">
+          <span class="dim-card-title" id="title-person">Personalizace</span>
+          <span class="dim-card-pct" id="pct-person"></span>
+        </div>
+        <div class="dim-bar-bg"><div class="dim-bar-fill fill-amber" id="bar-person" style="width:0%"></div></div>
+        <p class="dim-desc" id="desc-person"></p>
+      </div>
+    </div>
+
+    <div class="benefits-section">
+      <p class="benefits-title">Výhody optimismu</p>
+      <div class="benefits-grid">
+        <div class="benefit-item">
+          <span class="benefit-icon">🛡️</span>
+          <p class="benefit-text"><strong>Až o 50 % silnější imunita.</strong> Optimisté mají prokazatelně odolnější imunitní systém a méně onemocní.</p>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">🌱</span>
+          <p class="benefit-text"><strong>Přirozeně se jim daří více věcí.</strong> Optimistický přístup otevírá příležitosti a motivuje k akci i v těžkých chvílích.</p>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">⏳</span>
+          <p class="benefit-text"><strong>Dožívají se o 20 % déle.</strong> Výzkumy potvrzují přímou spojitost mezi optimismem a délkou života.</p>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">❤️</span>
+          <p class="benefit-text"><strong>O 30 % nižší riziko kardiovaskulárních onemocnění.</strong> Harvardská studie prokázala, že optimisté mají zdravější srdce a cévy.</p>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">💰</span>
+          <p class="benefit-text"><strong>Vydělávají průměrně o 19 % více.</strong> Výzkum University of Michigan ukázal, že optimisté dosahují vyšších příjmů a kariérního postupu.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="closing-card">
+      <p class="closing-text" id="closing-text"></p>
+      <p class="closing-sub" id="closing-sub"></p>
+    </div>
+
+    <div class="tip-card">
+      <p class="tip-label">Tip pro tebe</p>
+      <p class="tip-text" id="tip-text"></p>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn-primary" onclick="downloadResult()">Stáhnout výsledky</button>
+      <button class="btn-secondary" onclick="restartTest()">Zkusit znovu</button>
+    </div>
+
+    <div class="footer">
+      Inspirováno výzkumem Martina E. P. Seligmana a jeho konceptem vysvětlovacího stylu (Learned Optimism, 1991).
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const questions = [
+    { dim:0, text:"Pokazil/a sis důležitou prezentaci. Proč?", a:"Nebyl/a jsem ten den tolik připravený/á.", b:"V těchto momentech vždy zamrznu." },
+    { dim:0, text:"Hádal/a ses s partnerem/partnerkou kvůli tomu, že jsi zapomněl/a na výročí vztahu. Proč?", a:"Měl/a jsem toho poslední dobou hodně.", b:"Vždy zapomínám na věci, které jsou pro druhé důležité." },
+    { dim:0, text:"Přišel/přišla jsi pozdě na pracovní pohovor. Proč?", a:"Dnes ráno měl bus zpoždění.", b:"Vždy něco zkazí moje důležité momenty." },
+    { dim:0, text:"Dostal/a jsi velkou pochvalu za tvou poslední práci. Proč?", a:"S poslední prací jsem si dal/a hodně záležet.", b:"Vždy se snažím odvádět kvalitní práci." },
+    { dim:0, text:"Podařilo se ti udržet zdravý životní styl – cvičení, spánek, jídlo – celý měsíc. Proč?", a:"Tentokrát jsem měl/a dobrou rutinu a motivaci.", b:"Jsem disciplinovaný/á, dokáži věci dotáhnout." },
+    { dim:0, text:"Tvůj kolega ignoroval tvůj nápad na poradě. Proč?", a:"Asi mě zrovna neslyšel.", b:"Nikdo v práci moje nápady nikdy nebere vážně." },
+    { dim:0, text:"Nezvládl/a jsi dokončit úkol nebo projekt včas. Proč?", a:"Tento úkol byl výrazně složitější, než jsem čekal/a.", b:"Vždy podcením časovou náročnost." },
+    { dim:0, text:"Nový koníček – třeba posilovna, keramika nebo vaření – tě hodně baví. Proč?", a:"Zrovna tahle aktivita mi hodně sedí.", b:"Jsem člověk, který/á umí naplno prožívat všechny nové věci." },
+    { dim:1, text:"Neuspěl/a jsi ve výběrovém řízení na pozici, o kterou jsi hodně stál/a. Co to o tobě říká?", a:"Na tuto konkrétní roli jsem nebyl/a nejlepší kandidát/ka.", b:"Jsem celkově podprůměrný/á a nic mi nevychází." },
+    { dim:1, text:"Nepodařilo se ti splnit fitness cíl, který sis dal/a. Co to říká?", a:"Tento konkrétní přístup k cíli mi nefungoval.", b:"Nemám vůli ani disciplínu v žádné oblasti života." },
+    { dim:1, text:"Pomohl/a jsi kamarádovi/kamarádce projít rozchodem a byl/a ti za to vděčný/á. Co to říká?", a:"V tomto případě jsem použil/a správná slova ve správný čas.", b:"Jsem obecně dobrý/á v podpoře lidí v těžkých chvílích." },
+    { dim:1, text:"Zorganizoval/a jsi narozeninovou oslavu nebo výlet s přáteli a všem se to zatraceně líbilo. Co to říká?", a:"Tentokrát se vše hezky potkalo.", b:"Jsem zkrátka dobrý/á organizátor/ka." },
+    { dim:1, text:"Hádáš se s partnerem/partnerkou o penězích. Co si myslíš?", a:"Finanční nebo životní stres nás teď oba ovlivňuje.", b:"Vůbec neumím vycházet s lidmi." },
+    { dim:1, text:"Tvůj kreativní projekt – Instagram, video, blog – sklidil velký ohlas. Co to říká?", a:"Toto konkrétní téma lidi zajímalo.", b:"Mám skutečný talent, který lidé oceňují." },
+    { dim:1, text:"Nezvládl/a jsi sportovní výzvu, na kterou ses připravoval/a – závod, trek, turnaj. Co si myslíš?", a:"Na tuto náročnou výzvu mi kondice ještě nestačí.", b:"Jsem líný/á a nemám silnou vůli." },
+    { dim:1, text:"Kolegové nebo spolužáci na tebe spoléhají při řešení problémů. Co si o sobě říkáš?", a:"V tomto typu problémů mám zkušenosti.", b:"Jsem obecně spolehlivý/á a kompetentní člověk." },
+    { dim:2, text:"Tvůj tým nedodal projekt včas a klient nebo vedoucí byl naštvaný. Proč?", a:"Podcenili jsme rozsah a přidaly se nečekané komplikace.", b:"Kdybych lépe koordinoval/a ostatní, stihli bychom to." },
+    { dim:2, text:"Kamarád/ka se na tebe bez vysvětlení přestal/a ozývat. Proč?", a:"Asi prochází něčím těžkým, co nesouvisí se mnou.", b:"Asi jsem ho/ji nevědomky urazil/a nebo zklamal/a." },
+    { dim:2, text:"Dostal/a jsi negativní zpětnou vazbu na svou práci. Proč?", a:"Očekávání nebyla od začátku jasně nastavena.", b:"Nedodal/a jsem dost výkonu – je to moje odpovědnost." },
+    { dim:2, text:"Výlet, který jsi organizoval/a, se pokazil kvůli zrušeným spojům nebo špatnému počasí. Proč?", a:"Prostě se sešly věci, které nešly předvídat ani ovlivnit.", b:"Měl/a jsem líp zkontrolovat alternativy – je to moje chyba." },
+    { dim:2, text:"Dostal/a jsi jako jediný/á z týmu pochvalu nebo bonus. Proč?", a:"Měl/a jsem štěstí, že mi přidělili projekt s velkým dopadem.", b:"Pracuji tvrději než ostatní a zasloužím si to." },
+    { dim:2, text:"Mladší kolega/kolegyně nebo sourozenec za tebou přišel/přišla pro radu ohledně kariéry nebo studia. Proč?", a:"Náhodou vidí, že jsem prošel/prošla podobnou situací.", b:"Důvěřují mi a vědí, že mám co nabídnout." },
+    { dim:2, text:"Přišel/přišla jsi o klíče, průkaz nebo mobil a zmeškal/a kvůli tomu důležitou schůzku. Proč?", a:"Byl to chaotický den plný stresu a věci se nakupily.", b:"Jsem nepořádný/á a nezodpovědný/á člověk." },
+    { dim:2, text:"Mladší sourozenec nebo kamarád/ka za tebou přišel/přišla s osobním problémem a ty jsi mu/jí pomohl/a. Proč?", a:"Zrovna tento typ problému mi byl blízký ze své vlastní zkušenosti.", b:"Jsem pro ně bezpečná osoba, které důvěřují." },
+  ];
+
+  const optAnswer = ['a','a','a','b','b','a','a','b','a','a','b','b','a','b','a','b','a','a','a','a','a','b','a','b'];
+  const dimNames = ['Stálost','Rozsah','Personalizace'];
+  const dimClasses = ['dim-stalost','dim-rozsah','dim-personalizace'];
+
+  let userName='', userGender='';
+  let currentQ=0;
+  let answers=new Array(24).fill(null);
+  let locked=false;
+
+  document.getElementById('input-name').addEventListener('input', checkReady);
+
+  function selectGender(g){
+    userGender=g;
+    document.getElementById('btn-m').classList.toggle('selected',g==='m');
+    document.getElementById('btn-f').classList.toggle('selected',g==='f');
+    checkReady();
+  }
+  function checkReady(){
+    const n=document.getElementById('input-name').value.trim();
+    document.getElementById('btn-start').disabled=!(n&&userGender);
+  }
+
+  function showScreen(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function startTest(){
+    userName=document.getElementById('input-name').value.trim();
+    currentQ=0; answers=new Array(24).fill(null); locked=false;
+    showScreen('screen-question');
+    renderQ();
+  }
+
+  function renderQ(){
+    locked=false;
+    const q=questions[currentQ];
+    const pct=currentQ/questions.length*100;
+    document.getElementById('progress-fill').style.width=pct+'%';
+    document.getElementById('progress-cat').style.left=Math.min(pct,95)+'%';
+    document.getElementById('dot-stalost').classList.toggle('done', currentQ >= 8);
+    document.getElementById('dot-rozsah').classList.toggle('done', currentQ >= 16);
+    document.getElementById('dot-person').classList.toggle('done', currentQ >= 24);
+    document.getElementById('progress-counter').textContent=(currentQ+1)+' / '+questions.length;
+    const remaining=questions.filter((qq,i)=>qq.dim===q.dim&&i>=currentQ).length;
+    document.getElementById('progress-dim-info').textContent=dimNames[q.dim]+' – '+remaining+' zbývají';
+    const tag=document.getElementById('dim-tag');
+    tag.textContent=dimNames[q.dim];
+    tag.className='dim-tag '+dimClasses[q.dim];
+    document.getElementById('q-number').textContent='Otázka '+(currentQ+1);
+    document.getElementById('q-text').textContent=q.text;
+    const opts=document.getElementById('q-options');
+    opts.innerHTML='';
+    ['a','b'].forEach(key=>{
+      const btn=document.createElement('button');
+      btn.className='q-option';
+      if(answers[currentQ]===key) btn.classList.add('picked');
+      btn.textContent=q[key];
+      btn.addEventListener('click',()=>pickAnswer(key,btn));
+      opts.appendChild(btn);
+    });
+    document.getElementById('btn-back').style.display=currentQ>0?'inline-flex':'none';
+  }
+
+  function pickAnswer(choice,btn){
+    if(locked) return;
+    locked=true;
+    answers[currentQ]=choice;
+    document.querySelectorAll('.q-option').forEach(b=>b.classList.remove('picked'));
+    btn.classList.add('picked');
+    setTimeout(()=>{
+      currentQ++;
+      if(currentQ>=questions.length){
+        showScreen('screen-results');
+        showResults();
+      } else {
+        renderQ();
+      }
+    },350);
+  }
+
+  function goBack(){
+    if(currentQ<=0) return;
+    currentQ--;
+    renderQ();
+  }
+
+  function calcScores(){
+    const s=[0,0,0];
+    answers.forEach((ans,i)=>{ if(ans&&ans===optAnswer[i]) s[questions[i].dim]++; });
+    return s;
+  }
+
+  function showResults(){
+    const scores=calcScores();
+    const total=scores.reduce((a,b)=>a+b,0);
+    const pct=Math.round(total/24*100);
+    const isOpt=pct>=50;
+    const dimPcts=scores.map(s=>Math.round(s/8*100));
+
+    document.getElementById('result-name').textContent=userName;
+    document.getElementById('result-headline').innerHTML='Jsi z '+pct+'% <span>'+(isOpt?'optimista':'pesimista')+'</span>';
+    document.getElementById('score-pct').textContent=pct+'%';
+    document.getElementById('score-type-label').textContent=isOpt?'optimista':'pesimista';
+
+    // ring color by score
+    const ringColor = pct>=80 ? '#1D9E75' : pct>=53 ? '#EF9F27' : '#E24B4A';
+    document.getElementById('score-ring').style.stroke=ringColor;
+
+    setTimeout(()=>{
+      document.getElementById('score-ring').style.strokeDashoffset=427-(pct/100)*427;
+    },150);
+
+    const domIdx=dimPcts.indexOf(Math.max(...dimPcts));
+    const domColors=[['#E1F5EE','#0F6E56'],['#EEEDFE','#3C3489'],['#FAEEDA','#854F0B']];
+    const badge=document.getElementById('dominant-badge');
+    badge.style.background=domColors[domIdx][0];
+    badge.style.color=domColors[domIdx][1];
+    badge.textContent='Nejvíc tě ovlivňuje: '+dimNames[domIdx];
+
+    ['card-stalost','card-rozsah','card-person'].forEach((id,i)=>{
+      document.getElementById(id).classList.toggle('dominant',i===domIdx);
+    });
+    ['title-stalost','title-rozsah','title-person'].forEach((id,i)=>{
+      document.getElementById(id).innerHTML=dimNames[i]+(i===domIdx?' <span class="dim-dominant-label">dominantní</span>':'');
+    });
+
+    setTimeout(()=>{
+      document.getElementById('bar-stalost').style.width=dimPcts[0]+'%';
+      document.getElementById('bar-rozsah').style.width=dimPcts[1]+'%';
+      document.getElementById('bar-person').style.width=dimPcts[2]+'%';
+    },200);
+
+    document.getElementById('pct-stalost').textContent=dimPcts[0]+'%';
+    document.getElementById('pct-rozsah').textContent=dimPcts[1]+'%';
+    document.getElementById('pct-person').textContent=dimPcts[2]+'%';
+
+    document.getElementById('desc-stalost').textContent=dimPcts[0]>=50
+      ?'Problémy bereš jako dočasné. Věříš, že špatné věci přejdou a dobré mohou trvat – nejsi na nich zaseklý/á věčně.'
+      :'Máš tendenci věřit, že nepříjemné situace jsou trvalejší povahy. Dobré věci ti přijdou jako výjimky, ne pravidlo.';
+    document.getElementById('desc-rozsah').textContent=dimPcts[1]>=50
+      ?'Když se něco nepovede, nenecháš to rozlít do celého života. Problém v práci je jen problém v práci – ne důkaz, že jsi špatný/á člověk.'
+      :'Jedno selhání má u tebe tendenci zasahovat více oblastí. Snadno zobecňuješ – jedna věc se nepovede a zdá se, že nic nefunguje.';
+    document.getElementById('desc-person').textContent=dimPcts[2]>=50
+      ?'Špatné věci nepřičítáš automaticky sobě. Umíš rozlišit, kdy je situace o tobě a kdy jsou za ní vnější okolnosti.'
+      :'Máš sklony brát vinu na sebe, i když za situaci nemůžeš. Zároveň úspěchy přičítáš spíš štěstí než vlastním schopnostem.';
+
+    const tips=[
+      'Zkus si příště u nepříjemné situace říct: „Za jak dlouho na to budu vzpomínat?" Pomůže ti to odlišit dočasný problém od trvalého.',
+      'Když se něco nepovede, pojmenuj konkrétně co selhalo – ne sebe jako celek. „Tahle prezentace nevyšla" je jiné než „nejsem dobrý/á."',
+      'Zkus si příště u neúspěchu říct tři věci, které ho způsobily – ne jen ty sám/sama. Kontext je vždycky větší než jeden člověk.'
+    ];
+    document.getElementById('tip-text').textContent=tips[domIdx];
+
+    // personal closing
+    const closingTexts = {
+      high:   ['Jsi přirozený optimista – svět vidíš jako místo plné možností.', 'Tvůj pohled na svět ti otevírá dveře, které ostatní ani nevidí.'],
+      mid:    ['Jsi vyvážený typ – umíš být realistický i optimistický zároveň.', 'Máš zdravý pohled na svět. Trochu více víry v sebe a výsledky tě překvapí.'],
+      low:    ['Tvůj pohled na svět je momentálně spíš opatrný – ale to lze změnit.', 'Pesimismus tě chrání, ale zároveň ti může brát příležitosti. Věř si víc.']
+    };
+    const tier = pct>=80 ? 'high' : pct>=53 ? 'mid' : 'low';
+    const closing = closingTexts[tier];
+    document.getElementById('closing-text').innerHTML =
+      '<span class="closing-name">'+userName+'</span>, jsi z <span class="closing-name">'+pct+'%</span> '+(isOpt?'optimista':'pesimista')+'.';
+    document.getElementById('closing-sub').textContent = closing[Math.floor(Math.random()*closing.length)];
+  }
+
+  function restartTest(){
+    document.getElementById('input-name').value='';
+    userGender=''; currentQ=0; answers=new Array(24).fill(null); locked=false;
+    document.getElementById('btn-m').classList.remove('selected');
+    document.getElementById('btn-f').classList.remove('selected');
+    document.getElementById('btn-start').disabled=true;
+    showScreen('screen-intro');
+  }
+
+  function downloadResult(){
+    const scores=calcScores();
+    const total=scores.reduce((a,b)=>a+b,0);
+    const pct=Math.round(total/24*100);
+    const isOpt=pct>=50;
+    const dimPcts=scores.map(s=>Math.round(s/8*100));
+    const domIdx=dimPcts.indexOf(Math.max(...dimPcts));
+
+    const canvas=document.createElement('canvas');
+    canvas.width=800; canvas.height=540;
+    const ctx=canvas.getContext('2d');
+    ctx.fillStyle='#FFFBF8'; ctx.fillRect(0,0,800,540);
+    ctx.fillStyle='#D85A30'; ctx.fillRect(0,0,800,8);
+    ctx.fillStyle='#888780'; ctx.font='14px sans-serif';
+    ctx.fillText('Test vysvětlovacího stylu',60,50);
+    ctx.fillStyle='#2C2C2A'; ctx.font='bold 40px Georgia,serif';
+    ctx.fillText(userName,60,95);
+    ctx.fillStyle='#D85A30'; ctx.font='bold 52px Georgia,serif';
+    ctx.fillText('z '+pct+'% '+(isOpt?'optimista':'pesimista'),60,160);
+    ctx.fillStyle='#5F5E5A'; ctx.font='15px sans-serif';
+    ctx.fillText('Dominantní dimenze: '+dimNames[domIdx],60,198);
+    const dims=[
+      {label:'Stálost',pct:dimPcts[0],color:'#1D9E75'},
+      {label:'Rozsah',pct:dimPcts[1],color:'#7F77DD'},
+      {label:'Personalizace',pct:dimPcts[2],color:'#BA7517'},
+    ];
+    dims.forEach((d,i)=>{
+      const y=235+i*90;
+      ctx.fillStyle='#888780'; ctx.font='15px sans-serif';
+      ctx.fillText(d.label+' — '+d.pct+'%',60,y);
+      ctx.fillStyle='#EDE9E4';
+      ctx.beginPath(); ctx.roundRect(60,y+12,680,14,7); ctx.fill();
+      ctx.fillStyle=d.color;
+      ctx.beginPath(); ctx.roundRect(60,y+12,Math.round(680*d.pct/100),14,7); ctx.fill();
+    });
+    ctx.fillStyle='#B4B2A9'; ctx.font='12px sans-serif';
+    ctx.fillText('Inspirováno výzkumem Martina E. P. Seligmana',60,512);
+    const link=document.createElement('a');
+    link.download='vysledky-testu.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+  }
+</script>
+</body>
+</html>
