@@ -4,145 +4,64 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Optimismus vs Pesimismus – Test vysvětlovacího stylu</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --coral: #D85A30;
-      --coral-light: #FAECE7;
-      --coral-dark: #993C1D;
-      --coral-mid: #F0997B;
-      --teal: #1D9E75;
-      --teal-light: #E1F5EE;
-      --purple: #7F77DD;
-      --purple-light: #EEEDFE;
-      --amber: #BA7517;
-      --amber-light: #FAEEDA;
-      --bg: #FFFBF8;
-      --bg-secondary: #F5F0EB;
-      --text: #2C2C2A;
-      --text-secondary: #5F5E5A;
-      --text-tertiary: #888780;
-      --border: rgba(44,44,42,0.15);
-      --border-strong: rgba(44,44,42,0.25);
-      --font-display: 'Playfair Display', Georgia, serif;
-      --font-body: 'DM Sans', sans-serif;
-      --radius: 10px;
-      --radius-lg: 14px;
+      --yellow: #FFE135;
+      --yellow-dark: #F5C800;
+      --yellow-light: #FFF8C2;
+      --yellow-muted: rgba(255,225,53,0.1);
+      --yellow-border: rgba(255,225,53,0.25);
+      --bg: #111111;
+      --bg-card: #1C1C1C;
+      --bg-card2: #242424;
+      --text: #FFFFFF;
+      --text-secondary: rgba(255,255,255,0.65);
+      --text-tertiary: rgba(255,255,255,0.35);
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.14);
+      --green: #4ADE80;
+      --orange: #FB923C;
+      --red: #F87171;
+      --font-display: 'Montserrat', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+      --radius: 20px;
+      --radius-lg: 28px;
+      --radius-xl: 36px;
     }
 
-    body {
-      font-family: var(--font-body);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    #app {
-      max-width: 660px;
-      margin: 0 auto;
-      padding: 3rem 1.5rem 4rem;
-    }
-
+    body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; }
+    #app { max-width: 660px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
     .screen { display: none; }
     .screen.active { display: block; }
 
     /* ── INTRO ── */
-    .intro-eyebrow {
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-tertiary);
-      margin-bottom: 1rem;
-    }
-    .intro-title {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 5vw, 3rem);
-      line-height: 1.1;
-      margin-bottom: 1.25rem;
-    }
-    .intro-title span { color: var(--coral); }
-    .intro-desc {
-      font-size: 16px;
-      line-height: 1.75;
-      color: var(--text-secondary);
-      margin-bottom: 2.5rem;
-      max-width: 500px;
-    }
-    .intro-pills {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 2.5rem;
-    }
-    .intro-pill {
-      font-size: 13px;
-      padding: 5px 14px;
-      border-radius: 20px;
-      background: var(--bg-secondary);
-      color: var(--text-secondary);
-      border: 0.5px solid var(--border);
-    }
+    .intro-eyebrow { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--yellow); margin-bottom: 1rem; font-weight: 600; }
+    .intro-title { font-family: var(--font-display); font-size: clamp(2rem, 6vw, 3rem); line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1.25rem; color: var(--text); }
+    .intro-title span { color: var(--yellow); }
+    .intro-desc { font-size: 16px; line-height: 1.75; color: var(--text-secondary); margin-bottom: 2.5rem; max-width: 500px; }
+    .intro-pills { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 2.5rem; }
+    .intro-pill { font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 999px; background: var(--yellow-muted); color: var(--yellow); border: 1px solid var(--yellow-border); }
     .intro-form { display: flex; flex-direction: column; gap: 1.25rem; max-width: 380px; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-    .form-input {
-      padding: 11px 15px;
-      border: 0.5px solid var(--border-strong);
-      border-radius: var(--radius);
-      font-family: var(--font-body);
-      font-size: 15px;
-      background: #fff;
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    .form-input:focus { border-color: var(--coral); }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-label { font-size: 13px; color: var(--text-secondary); font-weight: 600; }
+    .form-input { padding: 13px 18px; border: 1.5px solid var(--border-strong); border-radius: var(--radius); font-family: var(--font-body); font-size: 15px; background: var(--bg-card); color: var(--text); outline: none; transition: border-color 0.2s; }
+    .form-input::placeholder { color: var(--text-tertiary); }
+    .form-input:focus { border-color: var(--yellow); }
     .gender-row { display: flex; gap: 10px; }
-    .gender-btn {
-      flex: 1;
-      padding: 11px;
-      border: 0.5px solid var(--border-strong);
-      border-radius: var(--radius);
-      background: #fff;
-      cursor: pointer;
-      font-family: var(--font-body);
-      font-size: 14px;
-      color: var(--text-secondary);
-      transition: all 0.15s;
-    }
-    .gender-btn:hover { border-color: var(--coral); background: var(--coral-light); }
-    .gender-btn.selected { border-color: var(--coral); background: var(--coral-light); color: var(--coral-dark); font-weight: 500; }
+    .gender-btn { flex: 1; padding: 13px; border: 1.5px solid var(--border-strong); border-radius: var(--radius); background: var(--bg-card); cursor: pointer; font-family: var(--font-body); font-size: 14px; font-weight: 600; color: var(--text-secondary); transition: all 0.2s; }
+    .gender-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+    .gender-btn.selected { border-color: var(--yellow); background: var(--yellow); color: #111; }
 
     /* ── BUTTONS ── */
-    .btn-primary {
-      padding: 13px 30px;
-      background: var(--coral);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      font-family: var(--font-body);
-      font-size: 15px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
-    }
-    .btn-primary:hover { opacity: 0.88; }
-    .btn-primary:active { transform: scale(0.98); }
-    .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
-    .btn-secondary {
-      padding: 12px 24px;
-      border: 0.5px solid var(--border-strong);
-      border-radius: var(--radius);
-      background: #fff;
-      font-family: var(--font-body);
-      font-size: 14px;
-      cursor: pointer;
-      color: var(--text);
-      transition: background 0.15s;
-    }
-    .btn-secondary:hover { background: var(--bg-secondary); }
+    .btn-primary { padding: 14px 32px; background: var(--yellow); color: #111; border: none; border-radius: var(--radius); font-family: var(--font-body); font-size: 15px; font-weight: 700; cursor: pointer; transition: transform 0.1s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(255,225,53,0.3); }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(255,225,53,0.45); }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-primary:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; transform: none; }
+    .btn-secondary { padding: 13px 26px; border: 1.5px solid var(--border-strong); border-radius: var(--radius); background: var(--bg-card); font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer; color: var(--text-secondary); transition: border-color 0.2s, color 0.2s; }
+    .btn-secondary:hover { border-color: var(--yellow); color: var(--yellow); }
 
     /* ── PROGRESS ── */
     .progress-section { margin-bottom: 2.25rem; }
@@ -150,107 +69,128 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     .progress-counter { font-size: 12px; color: var(--text-tertiary); }
     .progress-dim-info { font-size: 12px; color: var(--text-secondary); }
-    .progress-road-wrap { position: relative; height: 34px; }
+    .progress-road-wrap { position: relative; height: 60px; }
+    .cp-labels { position: absolute; top: 0; left: 0; right: 0; height: 16px; }
+    .cp-label {
+      position: absolute;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      top: 0;
+    }
+    .cp-label.stalost { color: #0F6E56; left: 0%; transform: translateX(0); }
+    .cp-label.rozsah  { color: #3C3489; left: 33.3%; transform: translateX(-50%); }
+    .cp-label.person  { color: #854F0B; left: 66.6%; transform: translateX(-50%); }
+    .cp-label.finish  { color: var(--text-tertiary); right: 0; }
     .progress-road {
       position: absolute;
-      bottom: 7px;
+      bottom: 18px;
       left: 0; right: 0;
       height: 3px;
       background: var(--border);
       border-radius: 2px;
-      overflow: hidden;
     }
     .progress-road-fill {
       height: 100%;
-      border-radius: 2px;
-      background: var(--coral);
+      border-radius: 999px;
+      background: var(--yellow);
       transition: width 0.4s ease;
+      box-shadow: 0 0 10px rgba(255,225,53,0.5);
     }
-    .progress-car {
+    .cp-dots { position: absolute; bottom: 18px; left: 0; right: 0; height: 4px; pointer-events: none; }
+    .cp-dot {
       position: absolute;
-      bottom: 6px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      top: 50%; transform: translate(-50%, -50%);
+      background: #2a2a2a;
+      border-color: var(--border-strong);
+      transition: background 0.4s, border-color 0.4s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cp-dot.stalost { left: 0%; }
+    .cp-dot.rozsah  { left: 33.3%; }
+    .cp-dot.person  { left: 66.6%; }
+    .cp-dot.done    { background: var(--yellow); border-color: var(--yellow); }
+    .cp-dot.done::after {
+      content: '';
+      display: block;
+      width: 5px; height: 9px;
+      border: 2.5px solid #111;
+      border-top: none; border-left: none;
+      transform: rotate(45deg) translateY(-1px);
+    }
+    .progress-cat {
+      position: absolute;
+      bottom: 24px;
       transition: left 0.4s ease;
       transform: translateX(-50%);
+      font-size: 22px;
       line-height: 1;
+      filter: drop-shadow(0 0 6px rgba(255,225,53,0.6));
     }
-    .progress-flag { position: absolute; right: -4px; bottom: 5px; font-size: 18px; }
+    .progress-flag { position: absolute; right: -2px; bottom: 14px; font-size: 18px; }
 
     /* ── DIM TAG ── */
-    .dim-tag {
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-weight: 500;
-      display: inline-block;
-      margin-bottom: 0.75rem;
-    }
-    .dim-stalost { background: var(--teal-light); color: #0F6E56; }
-    .dim-rozsah { background: var(--purple-light); color: #3C3489; }
-    .dim-personalizace { background: var(--amber-light); color: #854F0B; }
+    .dim-tag { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; font-weight: 700; display: inline-block; margin-bottom: 0.75rem; }
+    .dim-stalost { background: rgba(74,222,128,0.15); color: #4ADE80; border: 1px solid rgba(74,222,128,0.25); }
+    .dim-rozsah { background: rgba(255,225,53,0.12); color: var(--yellow); border: 1px solid var(--yellow-border); }
+    .dim-personalizace { background: rgba(251,146,60,0.12); color: #FB923C; border: 1px solid rgba(251,146,60,0.25); }
 
     /* ── QUESTION ── */
-    .q-number { font-size: 12px; color: var(--text-tertiary); margin-bottom: 0.5rem; }
+    .q-number { font-size: 12px; color: var(--text-tertiary); margin-bottom: 0.5rem; font-weight: 600; }
     .q-text {
       font-family: var(--font-display);
-      font-size: clamp(1.2rem, 3vw, 1.45rem);
+      font-size: clamp(1.3rem, 3vw, 1.6rem);
+      font-weight: 700;
       line-height: 1.4;
       margin-bottom: 1.75rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
     }
     .q-options { display: flex; flex-direction: column; gap: 12px; }
     .q-option {
-      padding: 17px 20px;
-      border: 0.5px solid var(--border-strong);
+      padding: 18px 22px;
+      border: 1.5px solid var(--border-strong);
       border-radius: var(--radius-lg);
-      background: #fff;
+      background: var(--bg-card);
       cursor: pointer;
       font-size: 15px;
       line-height: 1.55;
-      color: var(--text);
+      color: var(--text-secondary);
       text-align: left;
       font-family: var(--font-body);
+      font-weight: 500;
       width: 100%;
-      transition: border-color 0.15s, background 0.15s;
+      transition: border-color 0.2s, color 0.2s, transform 0.1s;
     }
-    .q-option:hover { border-color: var(--coral); background: var(--coral-light); }
-    .q-option.picked { border-color: var(--coral); background: var(--coral-light); }
-    .q-back {
-      background: none;
-      border: none;
-      font-family: var(--font-body);
-      font-size: 13px;
-      color: var(--text-tertiary);
-      cursor: pointer;
-      padding: 0;
-      margin-top: 1.25rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .q-back:hover { color: var(--text-secondary); }
+    .q-option:hover { border-color: var(--yellow); color: var(--text); transform: translateX(4px); }
+    .q-option.picked { border-color: var(--yellow); background: var(--yellow-muted); color: var(--text); }
+    .q-back { background: none; border: none; font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--text-tertiary); cursor: pointer; padding: 0; margin-top: 1.25rem; display: inline-flex; align-items: center; gap: 4px; }
+    .q-back:hover { color: var(--yellow); }
 
     /* ── RESULTS ── */
-    .result-hero {
-      text-align: center;
-      padding: 2.5rem 0 2rem;
-      border-bottom: 0.5px solid var(--border);
-      margin-bottom: 2rem;
-    }
-    .result-name { font-size: 14px; color: var(--text-secondary); margin-bottom: 0.5rem; }
+    .result-hero { text-align: center; padding: 2.5rem 0 2rem; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+    .result-name { font-size: 14px; color: var(--text-tertiary); margin-bottom: 0.5rem; font-weight: 600; }
     .result-headline {
       font-family: var(--font-display);
-      font-size: clamp(1.6rem, 4vw, 2.2rem);
-      line-height: 1.2;
+      font-size: clamp(1.4rem, 4vw, 1.9rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
       margin-bottom: 1.75rem;
+      color: var(--text);
     }
-    .result-headline span { color: var(--coral); }
-    .big-score-wrap { position: relative; width: 160px; height: 160px; margin: 0 auto 1rem; }
-    .big-score-svg { width: 160px; height: 160px; }
+    .result-headline span { color: var(--yellow); }
+    .big-score-wrap { position: relative; width: 170px; height: 170px; margin: 0 auto 1rem; }
+    .big-score-svg { width: 170px; height: 170px; }
     .big-score-text {
       position: absolute;
       top: 50%; left: 50%;
@@ -262,85 +202,56 @@
       font-size: 2.4rem;
       font-weight: 700;
       line-height: 1;
+      letter-spacing: -0.03em;
       color: var(--text);
     }
     .big-score-type {
       font-size: 11px;
       color: var(--text-tertiary);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
+      font-weight: 600;
     }
 
-    .dominant-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 16px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 2rem;
-    }
+    .dominant-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 999px; font-size: 13px; font-weight: 700; margin-bottom: 2rem; background: var(--yellow-muted); color: var(--yellow); border: 1px solid var(--yellow-border); }
 
     .dims-grid { display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.75rem; }
-    .dim-card {
-      padding: 1.35rem;
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      background: #fff;
-    }
-    .dim-card.dominant { border-color: var(--coral); border-width: 1.5px; }
+    .dim-card { padding: 1.35rem; border: 1.5px solid var(--border); border-radius: var(--radius-lg); background: var(--bg-card); }
+    .dim-card.dominant { border-color: var(--yellow); }
     .dim-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
-    .dim-card-title { font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-    .dim-dominant-label {
-      font-size: 11px;
-      padding: 2px 9px;
-      border-radius: 10px;
-      background: var(--coral-light);
-      color: var(--coral-dark);
-    }
-    .dim-card-pct { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
-    .dim-bar-bg {
-      height: 6px;
-      background: var(--bg-secondary);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-bottom: 0.85rem;
-    }
-    .dim-bar-fill { height: 100%; border-radius: 3px; transition: width 0.9s cubic-bezier(.4,0,.2,1); }
-    .fill-teal { background: var(--teal); }
-    .fill-purple { background: var(--purple); }
-    .fill-amber { background: var(--amber); }
+    .dim-card-title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--text); }
+    .dim-dominant-label { font-size: 10px; padding: 3px 10px; border-radius: 999px; background: var(--yellow); color: #111; font-weight: 700; }
+    .dim-card-pct { font-size: 14px; font-weight: 700; color: var(--text-tertiary); }
+    .dim-bar-bg { height: 7px; background: var(--border-strong); border-radius: 999px; overflow: hidden; margin-bottom: 0.85rem; }
+    .dim-bar-fill { height: 100%; border-radius: 999px; transition: width 0.9s cubic-bezier(.4,0,.2,1); }
+    .fill-teal { background: var(--green); }
+    .fill-purple { background: var(--yellow); }
+    .fill-amber { background: var(--orange); }
     .dim-desc { font-size: 13px; line-height: 1.65; color: var(--text-secondary); }
 
-    .tip-card {
-      padding: 1.35rem;
-      border-radius: var(--radius-lg);
-      background: var(--coral-light);
-      border: 0.5px solid var(--coral-mid);
-      margin-bottom: 1.75rem;
-    }
-    .tip-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--coral-dark);
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-    }
-    .tip-text { font-size: 14px; line-height: 1.65; color: #712B13; }
+    /* ── BENEFITS ── */
+    .benefits-section { margin-bottom: 1.75rem; }
+    .benefits-title { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 1rem; }
+    .benefits-grid { display: flex; flex-direction: column; gap: 10px; }
+    .benefit-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--bg-card); }
+    .benefit-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .benefit-text { font-size: 13px; line-height: 1.6; color: var(--text-secondary); }
+    .benefit-text strong { color: var(--text); font-weight: 700; }
+
+    /* ── PERSONAL CLOSING ── */
+    .closing-card { padding: 1.75rem; border-radius: var(--radius-xl); border: 2px solid var(--yellow); background: var(--yellow-muted); margin-bottom: 1.75rem; text-align: center; box-shadow: 0 0 40px rgba(255,225,53,0.08); }
+    .closing-text { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.4; color: var(--text); }
+    .closing-text .closing-name { color: var(--yellow); }
+    .closing-sub { font-size: 14px; color: var(--text-secondary); margin-top: 0.75rem; line-height: 1.6; }
+
+    .tip-card { padding: 1.35rem; border-radius: var(--radius-lg); background: var(--bg-card); border: 1.5px solid var(--border-strong); margin-bottom: 1.75rem; }
+    .tip-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--yellow); font-weight: 700; margin-bottom: 0.5rem; }
+    .tip-text { font-size: 13px; line-height: 1.65; color: var(--text-secondary); }
 
     .result-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
     /* ── FOOTER ── */
-    .footer {
-      margin-top: 3rem;
-      padding-top: 1.5rem;
-      border-top: 0.5px solid var(--border);
-      font-size: 12px;
-      color: var(--text-tertiary);
-      line-height: 1.6;
-    }
+    .footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-tertiary); line-height: 1.6; }
   </style>
 </head>
 <body>
@@ -350,7 +261,7 @@
   <div id="screen-intro" class="screen active">
     <p class="intro-eyebrow">Test vysvětlovacího stylu</p>
     <h1 class="intro-title">Optimismus<br>vs <span>pesimismus</span></h1>
-    <p class="intro-desc">Zjisti, jak tvůj mozek vidí svět. 24 krátkých situací, žádné správné odpovědi – jen tvůj přirozený pohled na věc.</p>
+    <p class="intro-desc">Zjisti, jak tvůj mozek vidí svět. 24 krátkých situací, žádná odpověď není špatná – jde o to pochopit přirozený pohled na věc.</p>
     <div class="intro-pills">
       <span class="intro-pill">24 otázek</span>
       <span class="intro-pill">cca 5 minut</span>
@@ -381,19 +292,21 @@
         <span class="progress-dim-info" id="progress-dim-info"></span>
       </div>
       <div class="progress-road-wrap">
+        <div class="cp-labels">
+          <span class="cp-label stalost">Stálost</span>
+          <span class="cp-label rozsah">Rozsah</span>
+          <span class="cp-label person">Personalizace</span>
+          <span class="cp-label finish">Cíl</span>
+        </div>
         <div class="progress-road">
           <div class="progress-road-fill" id="progress-fill"></div>
         </div>
-        <div class="progress-car" id="progress-car">
-          <svg width="30" height="18" viewBox="0 0 30 18" fill="none">
-            <rect x="4" y="6" width="22" height="8" rx="2.5" fill="#D85A30"/>
-            <rect x="8" y="2" width="12" height="7" rx="2" fill="#F0997B"/>
-            <circle cx="8.5" cy="15" r="2.8" fill="#2C2C2A"/>
-            <circle cx="21.5" cy="15" r="2.8" fill="#2C2C2A"/>
-            <rect x="0" y="10" width="5" height="2.5" rx="1.2" fill="#EF9F27"/>
-            <rect x="25" y="10" width="5" height="2.5" rx="1.2" fill="#993C1D"/>
-          </svg>
+        <div class="cp-dots">
+          <div class="cp-dot stalost" id="dot-stalost"></div>
+          <div class="cp-dot rozsah"  id="dot-rozsah"></div>
+          <div class="cp-dot person"  id="dot-person"></div>
         </div>
+        <div class="progress-cat" id="progress-cat">🐱</div>
         <span class="progress-flag">🏁</span>
       </div>
     </div>
@@ -411,7 +324,7 @@
       <h2 class="result-headline" id="result-headline"></h2>
       <div class="big-score-wrap">
         <svg class="big-score-svg" viewBox="0 0 160 160">
-          <circle cx="80" cy="80" r="68" fill="none" stroke-width="8" stroke="#EDE9E4"/>
+          <circle cx="80" cy="80" r="68" fill="none" stroke-width="8" stroke="#2a2a2a"/>
           <circle cx="80" cy="80" r="68" fill="none" stroke-width="8" stroke-linecap="round"
             stroke="#D85A30" stroke-dasharray="427" stroke-dashoffset="427"
             transform="rotate(-90 80 80)" id="score-ring"
@@ -453,6 +366,38 @@
         <div class="dim-bar-bg"><div class="dim-bar-fill fill-amber" id="bar-person" style="width:0%"></div></div>
         <p class="dim-desc" id="desc-person"></p>
       </div>
+    </div>
+
+    <div class="benefits-section">
+      <p class="benefits-title">Výhody optimismu</p>
+      <div class="benefits-grid">
+        <div class="benefit-item">
+          <span class="benefit-icon">🛡️</span>
+          <p class="benefit-text"><strong>Až o 50 % silnější imunita.</strong> Optimisté mají prokazatelně odolnější imunitní systém a méně onemocní.</p>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">🌱</span>
+          <p class="benefit-text"><strong>Přirozeně se jim daří více věcí.</strong> Optimistický přístup otevírá příležitosti a motivuje k akci i v těžkých chvílích.</p>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">⏳</span>
+          <p class="benefit-text"><strong>Dožívají se o 20 % déle.</strong> Výzkumy potvrzují přímou spojitost mezi optimismem a délkou života.</p>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">❤️</span>
+          <p class="benefit-text"><strong>O 30 % nižší riziko kardiovaskulárních onemocnění.</strong> Harvardská studie prokázala, že optimisté mají zdravější srdce a cévy.</p>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">💰</span>
+          <p class="benefit-text"><strong>Vydělávají průměrně o 19 % více.</strong> Výzkum University of Michigan ukázal, že optimisté dosahují vyšších příjmů a kariérního postupu.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="closing-card">
+      <p class="closing-text" id="closing-text"></p>
+      <p class="closing-sub" id="closing-sub"></p>
     </div>
 
     <div class="tip-card">
@@ -540,7 +485,10 @@
     const q=questions[currentQ];
     const pct=currentQ/questions.length*100;
     document.getElementById('progress-fill').style.width=pct+'%';
-    document.getElementById('progress-car').style.left=Math.min(pct,93)+'%';
+    document.getElementById('progress-cat').style.left=Math.min(pct,95)+'%';
+    document.getElementById('dot-stalost').classList.toggle('done', currentQ >= 8);
+    document.getElementById('dot-rozsah').classList.toggle('done', currentQ >= 16);
+    document.getElementById('dot-person').classList.toggle('done', currentQ >= 24);
     document.getElementById('progress-counter').textContent=(currentQ+1)+' / '+questions.length;
     const remaining=questions.filter((qq,i)=>qq.dim===q.dim&&i>=currentQ).length;
     document.getElementById('progress-dim-info').textContent=dimNames[q.dim]+' – '+remaining+' zbývají';
@@ -603,6 +551,10 @@
     document.getElementById('score-pct').textContent=pct+'%';
     document.getElementById('score-type-label').textContent=isOpt?'optimista':'pesimista';
 
+    // ring color by score
+    const ringColor = pct>=80 ? '#1D9E75' : pct>=53 ? '#EF9F27' : '#E24B4A';
+    document.getElementById('score-ring').style.stroke=ringColor;
+
     setTimeout(()=>{
       document.getElementById('score-ring').style.strokeDashoffset=427-(pct/100)*427;
     },150);
@@ -647,6 +599,18 @@
       'Zkus si příště u neúspěchu říct tři věci, které ho způsobily – ne jen ty sám/sama. Kontext je vždycky větší než jeden člověk.'
     ];
     document.getElementById('tip-text').textContent=tips[domIdx];
+
+    // personal closing
+    const closingTexts = {
+      high:   ['Jsi přirozený optimista – svět vidíš jako místo plné možností.', 'Tvůj pohled na svět ti otevírá dveře, které ostatní ani nevidí.'],
+      mid:    ['Jsi vyvážený typ – umíš být realistický i optimistický zároveň.', 'Máš zdravý pohled na svět. Trochu více víry v sebe a výsledky tě překvapí.'],
+      low:    ['Tvůj pohled na svět je momentálně spíš opatrný – ale to lze změnit.', 'Pesimismus tě chrání, ale zároveň ti může brát příležitosti. Věř si víc.']
+    };
+    const tier = pct>=80 ? 'high' : pct>=53 ? 'mid' : 'low';
+    const closing = closingTexts[tier];
+    document.getElementById('closing-text').innerHTML =
+      '<span class="closing-name">'+userName+'</span>, jsi z <span class="closing-name">'+pct+'%</span> '+(isOpt?'optimista':'pesimista')+'.';
+    document.getElementById('closing-sub').textContent = closing[Math.floor(Math.random()*closing.length)];
   }
 
   function restartTest(){
